@@ -1,5 +1,6 @@
 import pygame
 
+
 start = input().split()
 try:
     width = float(start[0])
