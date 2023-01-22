@@ -3,7 +3,7 @@ from math import sqrt
 
 
 class Hex:
-    def __init__(self, position_x, position_y, territory_status='none', status='close'):
+    def __init__(self, position_x, position_y, territory_status, status='close'):
         self.territory_status = territory_status
         self.status = status
         self.position_x = position_x
@@ -26,11 +26,11 @@ class Hex:
 
     def drawHex(self, screen, pos, cell_size):
         colors_of_types = {
-            'lavender': (166, 166, 237), 'field': (245, 222, 179), 'desert': (233, 152, 93),  # lavender, bezevii, pesok
-            'trap': (255, 102, 0), 'natives': (128, 64, 48), 'swamp': (172, 183, 142),  # orange, braun, swamp
-            'volcano': (46, 48, 54), 'emptiness': (190, 190, 190), 'good_natives': (205, 133, 63),
+            'lavender': tuple((166, 166, 237)), 'field': tuple((245, 222, 179)), 'desert': tuple((233, 152, 93)),  # lavender, bezevii, pesok
+            'trap': tuple((255, 102, 0)), 'natives': tuple((128, 64, 48)), 'swamp': tuple((172, 183, 142)),  # orange, braun, swamp
+            'volcano': tuple((46, 48, 54)), 'emptiness': tuple((190, 190, 190)), 'good_natives': tuple((205, 133, 63)),
             # vulcansii, grey, light_braun
-            'magma': (200, 116, 84), 'animals': (178, 34, 34)  # rizii, red
+            'magma': tuple((200, 116, 84)), 'animals': tuple((178, 34, 34))  # rizii, red
         }
 
         x, y = pos

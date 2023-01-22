@@ -24,6 +24,7 @@ if __name__ == '__main__':
                 if what is not False:
                     score = main_hero.go_to(what[0], what[1], main_hero, board, score)
                 print(score)
+                print(main_hero.get_status_of_hero())
         screen.fill((0, 0, 0))
         board.render(screen, main_hero)
         pygame.display.flip()
