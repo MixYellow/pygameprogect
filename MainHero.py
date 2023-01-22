@@ -1,5 +1,6 @@
 import pygame
 from random import choices, randint
+from Effects import *
 from consts import *
 
 
@@ -138,6 +139,7 @@ class MainHero:
             if 'lavender flowers' in self.inventory:
                 self.inventory.remove('lavender flowers')
             else:
+                create_particles(board.get_board()[board_y][board_x].__int__(), 'boom.png')
                 if self.status_bar_health != []:
                     self.status_bar_health = ['death']
                     self.status_of_hero = 'death'
@@ -163,7 +165,10 @@ class MainHero:
                                [last_coords[0], last_coords[1]])
                     self.status_bar_speed = SPEEDDEATHLST
         elif status == 'swamp':
-            if self.status_bar_speed == [] or 'death' not in self.status_bar_health:
+            if 'sand' in self.inventory:
+                self.inventory.remove('sand')
+                board.get_board()[board_y][board_x].set_territory_status(['emptiness'])
+            elif self.status_bar_speed == [] or 'death' not in self.status_bar_health:
                 self.status_bar_speed = SPEEDDOWNLST
         elif status == 'animals':
             if 'meat' in self.inventory:
@@ -184,4 +189,4 @@ class MainHero:
         elif status == 'volcano':
             chance = randint(0, 1000)
             self.volcanoses[str(chance)] = [board_y, board_x]
-        
+

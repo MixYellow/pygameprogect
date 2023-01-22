@@ -14,3 +14,5 @@ SPEEDDEATHLST = ['sloweddown', 'sloweddown', 'sloweddown', 'sloweddown', 'slowed
 
 SPEEDDOWNLST = ['sloweddown', 'sloweddown', 'sloweddown', 'sloweddown', 'sloweddown', 'sloweddown', 'sloweddown',
                  'sloweddown', 'sloweddown', 'sloweddown']
+
+GRAVITY = 0.2

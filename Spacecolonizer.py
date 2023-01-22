@@ -1,6 +1,7 @@
 import pygame
 from Board import *
 from Hex import *
+from Effects import *
 
 if __name__ == '__main__':
     # pygame.init()
@@ -14,6 +15,8 @@ if __name__ == '__main__':
     dopcoords = board.prerender()
     score = 0
     main_hero = MainHero(dopcoords[0], dopcoords[1])
+    addtoall_sprites('boom.png')
+    clock = pygame.time.Clock()
     running = True
     while running:
         for event in pygame.event.get():
@@ -25,8 +28,11 @@ if __name__ == '__main__':
                     score = main_hero.go_to(what[0], what[1], main_hero, board, score)
                 print(score)
                 print(main_hero.get_status_of_hero())
+        all_sprites.update()
         screen.fill((0, 0, 0))
         board.render(screen, main_hero)
+        all_sprites.draw(screen)
         pygame.display.flip()
+        clock.tick(50)
 
     pygame.quit()
