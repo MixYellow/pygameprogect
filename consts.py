@@ -15,4 +15,10 @@ SPEEDDEATHLST = ['sloweddown', 'sloweddown', 'sloweddown', 'sloweddown', 'slowed
 SPEEDDOWNLST = ['sloweddown', 'sloweddown', 'sloweddown', 'sloweddown', 'sloweddown', 'sloweddown', 'sloweddown',
                  'sloweddown', 'sloweddown', 'sloweddown']
 
+EXPLORELST = ['boom.png', 'magma.png']
+
+FLYLST = ['health.png', 'heart.png']
+
 GRAVITY = 0.2
+
+cell_size = 20

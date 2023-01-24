@@ -2,6 +2,7 @@ import pygame
 from Board import *
 from Hex import *
 from Effects import *
+from consts import *
 
 if __name__ == '__main__':
     # pygame.init()
