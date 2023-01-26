@@ -19,6 +19,12 @@ EXPLORELST = ['boom.png', 'magma.png']
 
 FLYLST = ['health.png', 'heart.png']
 
+ONETIMELST = ['world.png']
+
+DROPLST = ['lavender.png', 'meat.png', 'sand.png']
+
+FALLINGLST = ['speeddown.png']
+
 GRAVITY = 0.2
 
 cell_size = 20

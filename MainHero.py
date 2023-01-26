@@ -134,6 +134,12 @@ class MainHero:
 
         if status == 'lavender' or status == 'field' or status == 'desert':
             drop = library_of_gives[status]
+            if status == 'desert':
+                create_particles(board.get_board()[board_y][board_x].__int__(), 'sand.png', cell_size * 2)
+            elif status == 'field':
+                create_particles(board.get_board()[board_y][board_x].__int__(), 'meat.png', cell_size * 2)
+            elif status == 'lavender':
+                create_particles(board.get_board()[board_y][board_x].__int__(), 'lavender.png', cell_size * 2)
             count_in_inventory = self.inventory.count(drop)
             self.inventory += [drop, drop, drop][0:(3 - count_in_inventory)]
         elif status == 'trap':
@@ -144,7 +150,7 @@ class MainHero:
                 self.inventory.remove('lavender flowers')
             else:
                 # create_particles(board.get_board()[board_y][board_x].__int__(), 'boom.png', cell_size)
-                create_particles(board.get_board()[board_y][board_x].__int__(), 'heart.png', cell_size * 2)
+                create_particles(board.get_board()[board_y][board_x].__int__(), 'speeddown.png', cell_size * 2)
                 if self.status_bar_health != []:
                     self.status_bar_health = ['death']
                     self.status_of_hero = 'death'
@@ -154,6 +160,7 @@ class MainHero:
             board.get_board()[board_y][board_x].set_territory_status(['emptiness'])
         elif status == 'natives':
             if 'lavender flowers' in self.inventory or 'meat' in self.inventory:
+                create_particles(board.get_board()[board_y][board_x].__int__(), 'world.png', cell_size * 2)
                 board.get_board()[board_y][board_x].set_territory_status(['good_natives'])
                 if 'meat' in self.inventory:
                     self.inventory.remove('meat')
