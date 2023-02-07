@@ -134,13 +134,14 @@ class MainHero:
 
         if status == 'lavender' or status == 'field' or status == 'desert':
             drop = library_of_gives[status]
-            if status == 'desert':
-                create_particles(board.get_board()[board_y][board_x].__int__(), 'sand.png', cell_size * 2)
-            elif status == 'field':
-                create_particles(board.get_board()[board_y][board_x].__int__(), 'meat.png', cell_size * 2)
-            elif status == 'lavender':
-                create_particles(board.get_board()[board_y][board_x].__int__(), 'lavender.png', cell_size * 2)
             count_in_inventory = self.inventory.count(drop)
+            if count_in_inventory != 3:
+                if status == 'desert':
+                    create_particles(board.get_board()[board_y][board_x].__int__(), 'sand.png', cell_size * 2)
+                elif status == 'field':
+                    create_particles(board.get_board()[board_y][board_x].__int__(), 'meat.png', cell_size * 2)
+                elif status == 'lavender':
+                    create_particles(board.get_board()[board_y][board_x].__int__(), 'lavender.png', cell_size * 2)
             self.inventory += [drop, drop, drop][0:(3 - count_in_inventory)]
         elif status == 'trap':
             if 'lavender flowers' in self.inventory:
@@ -149,8 +150,7 @@ class MainHero:
                 create_particles(board.get_board()[board_y][board_x].__int__(), 'health.png', cell_size)
                 self.inventory.remove('lavender flowers')
             else:
-                # create_particles(board.get_board()[board_y][board_x].__int__(), 'boom.png', cell_size)
-                create_particles(board.get_board()[board_y][board_x].__int__(), 'speeddown.png', cell_size * 2)
+                create_particles(board.get_board()[board_y][board_x].__int__(), 'boom.png', cell_size)
                 if self.status_bar_health != []:
                     self.status_bar_health = ['death']
                     self.status_of_hero = 'death'
@@ -171,15 +171,18 @@ class MainHero:
                     self.status_of_hero = 'death'
                     self.status_bar_health = ['death']
                 else:
+                    create_particles(board.get_board()[board_y][board_x].__int__(), 'angry.png', cell_size * 2)
                     self.status_bar_health += DEATHLST
                     self.go_to(last_coords[0], last_coords[1], main_hero, board, score - 1,
                                [last_coords[0], last_coords[1]])
                     self.status_bar_speed = SPEEDDEATHLST
         elif status == 'swamp':
             if 'sand' in self.inventory:
+                create_particles(board.get_board()[board_y][board_x].__int__(), 'steam.png', cell_size * 2)
                 self.inventory.remove('sand')
                 board.get_board()[board_y][board_x].set_territory_status(['emptiness'])
             elif self.status_bar_speed == [] or 'death' not in self.status_bar_health:
+                create_particles(board.get_board()[board_y][board_x].__int__(), 'speeddown.png', cell_size * 2)
                 self.status_bar_speed = SPEEDDOWNLST
         elif status == 'animals':
             if 'meat' in self.inventory:
@@ -187,13 +190,15 @@ class MainHero:
                 self.status_bar_speed = LSTSPEEDUP
                 self.inventory.remove('meat')
                 board.get_board()[board_y][board_x].set_territory_status(['emptiness'])
+                create_particles(board.get_board()[board_y][board_x].__int__(), 'speedup.png', cell_size * 2)
             else:
-                lucky = choices(['lucky', 'notlucky'], [0.9, 0.1])
+                lucky = choices(['lucky', 'notlucky'], [0.8, 0.2])
                 if lucky == 'notlucky':
                     if 'lavender flowers' in self.inventory:
                         create_particles(board.get_board()[board_y][board_x].__int__(), 'health.png', cell_size)
                         self.inventory.remove('lavender flowers')
                     elif self.status_bar_health == []:
+                        create_particles(board.get_board()[board_y][board_x].__int__(), 'beet.png', cell_size * 2)
                         self.status_bar_health += DEATHLST
                         self.go_to(last_coords[0], last_coords[1], main_hero, board, score - 1,
                                    [last_coords[0], last_coords[1]])

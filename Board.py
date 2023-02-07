@@ -6,14 +6,14 @@ from random import randint, choices
 
 class Board:
     # создание поля
-    def __init__(self, width, height):
+    def __init__(self, width, height, cell_size):
         self.width = width
         self.height = height
         self.board = []
         # значения по умолчанию
-        self.left = 30
-        self.top = 30
-        self.cell_size = 20
+        self.left = cell_size * 3
+        self.top = cell_size * 2
+        self.cell_size = cell_size
 
         self.height_polygon = self.cell_size * 5
         self.vert = self.cell_size * 1
@@ -27,22 +27,17 @@ class Board:
         self.help1 = []
         for _ in range(self.height):
             for __ in range(self.width):
-                # who_it_is = [0, 1, 2]
-                # who_it_is = choices(who_it_is, weights=[0.3, 0.2, 0.5])[0]
-                # if who_it_is == 0:
-                #     who_it_is = choices(lst_of_types_of_hex[0], weights=[0.3, 0.3, 0.4])
-                # elif who_it_is == 1:
-                #     who_it_is = choices(lst_of_types_of_hex[1], weights=[0.2, 0.4, 0.4])
-                # else:
-                #     who_it_is = choices(lst_of_types_of_hex[2], weights=[0.68, 0.0, 0.2, 0.1, 0.02])
-                #
-                # self.help1.append(Hex((_ % 2) * self.width_polygon * (3 / 18) + __ * self.horiz + self.left,
-                #                       _ * self.vert + self.top, who_it_is))
+                who_it_is = [0, 1, 2]
+                who_it_is = choices(who_it_is, weights=[0.3, 0.2, 0.5])[0]
+                if who_it_is == 0:
+                    who_it_is = choices(lst_of_types_of_hex[0], weights=[0.3, 0.3, 0.4])
+                elif who_it_is == 1:
+                    who_it_is = choices(lst_of_types_of_hex[1], weights=[0.2, 0.4, 0.4])
+                else:
+                    who_it_is = choices(lst_of_types_of_hex[2], weights=[0.68, 0.0, 0.2, 0.1, 0.02])
 
                 self.help1.append(Hex((_ % 2) * self.width_polygon * (3 / 18) + __ * self.horiz + self.left,
-                                      _ * self.vert + self.top, ['trap']))
-
-
+                                      _ * self.vert + self.top, who_it_is))
 
             self.board.append(self.help1)
             self.help1 = []

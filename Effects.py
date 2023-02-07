@@ -3,7 +3,7 @@ import os
 import sys
 from random import choice, randint
 from math import sqrt
-from consts import EXPLORELST, FLYLST, GRAVITY, DROPLST, ONETIMELST, FALLINGLST
+from consts import EXPLORELST, FLYLST, GRAVITY, DROPLST, ONETIMELST, FALLINGLST, JUMPINGLST, ATTACKLST
 
 pygame.init()
 all_sprites = pygame.sprite.Group()
@@ -39,13 +39,17 @@ def create_particles(position, name, cell_size):
         types = 'big'
     elif name in FALLINGLST:
         types = 'fall'
+    elif name in JUMPINGLST:
+        types = 'up'
+    elif name in ATTACKLST:
+        types = 'attack'
 
     # количество создаваемых частиц
     if types == 'drop':
         particle_count = 3
     elif types == 'big':
         particle_count = 1
-    elif types == 'fall':
+    elif types == 'fall' or types == 'up' or types == 'attack':
         particle_count = 5
     else:
         particle_count = 20
@@ -73,13 +77,17 @@ class Particle(pygame.sprite.Sprite):
 
     def __init__(self, pos, dx, dy, name, radius, types):
         self.types = types
-        if types == 'drop':
+        if types == 'drop' or types == 'attack':
             self.pictures = [load_image(name, (radius // 1.5, radius // 1.5))]
             for scale in (radius // 1.5, radius // 1.5 + 5, radius // 1.5 + 10):
                 self.pictures.append(pygame.transform.scale(self.pictures[0], (scale, scale)))
         elif types == 'big':
             self.pictures = [load_image(name, (radius, radius))]
             self.pictures.append(pygame.transform.scale(self.pictures[0], (radius, radius)))
+        elif types == 'fall' or types == 'up':
+            self.pictures = [load_image(name, (radius // 2, radius // 2))]
+            for scale in (radius // 2, radius // 2 + 5, radius // 2 + 10):
+                self.pictures.append(pygame.transform.scale(self.pictures[0], (scale, scale)))
         else:
             self.pictures = [load_image(name, (radius // 2, radius // 2))]
             for scale in (radius // 3, radius // 2 + 5, radius // 2 + 10):
@@ -91,8 +99,11 @@ class Particle(pygame.sprite.Sprite):
         self.flagdrop = False
 
         self.velocity = [dx, dy]
-        if types == 'drop':
-            self.rect.x, self.rect.y = pos
+        if types == 'fall':
+            self.rect.x, self.rect.y = pos[0], pos[1] - radius // 2
+            self.oldrectx, self.oldrecty = pos
+        elif types == 'attack':
+            self.rect.x, self.rect.y = pos[0] + randint(-radius, radius), pos[1] + randint(-radius, radius)
             self.oldrectx, self.oldrecty = pos
         else:
             self.oldrectx, self.oldrecty = pos
@@ -111,17 +122,19 @@ class Particle(pygame.sprite.Sprite):
             self.gravity_y = randint(-1, 0) / 200
             self.gravity = -0.02
         elif types == 'fall':
-            self.velocity[1] = randint(-2, 0)
-            self.rect.x = self.rect.x + randint(-radius // 2, radius // 2)
+            self.rect.x = self.rect.x + randint(-radius // 2.5, radius // 2.5)
             self.gravity_y = randint(-1, 0) / 200
             self.gravity = 1
+        elif types == 'up':
+            self.rect.x = self.rect.x + randint(-radius // 3, radius // 3)
+            self.gravity_y = randint(-1, 0) / 200
+            self.gravity = -1
         elif types == 'big':
             self.gravity = -1
 
-
     def update(self):
         if self.types == 'drop':
-            if (sqrt((self.rect.x - self.oldrectx) ** 2 + (self.rect.y - self.oldrecty) ** 2) > self.radius * 2
+            if (sqrt((self.rect.x - self.oldrectx) ** 2 + (self.rect.y - self.oldrecty) ** 2) > self.radius * 1.25
             or self.velocity[0] == 0 and self.velocity[1] == 0) or self.flagdrop is True:
                 if self.flagdrop is False:
                     self.flagdrop = True
@@ -140,14 +153,27 @@ class Particle(pygame.sprite.Sprite):
             else:
                 self.rect.x += self.velocity[0]
                 self.rect.y += self.velocity[1] + self.gravity
+        elif self.types == 'attack':
+            self.gravity_x = abs(self.rect.x - self.oldrectx) / 9
+            self.gravity_y = abs(self.rect.y - self.oldrecty) / 9
+            if self.rect.x > self.oldrectx:
+                self.rect.x -= self.gravity_x
+            elif self.rect.x < self.oldrectx:
+                self.rect.x += self.gravity_x
+            if self.rect.y > self.oldrecty:
+                self.rect.y -= self.gravity_y
+            elif self.rect.y < self.oldrecty:
+                self.rect.y += self.gravity_y
+            if (sqrt((self.rect.x - self.oldrectx) ** 2 + (self.rect.y - self.oldrecty) ** 2)) < self.radius / 3:
+                self.kill()
         elif self.types == 'big':
             self.rect.y += self.gravity
             if sqrt((self.rect.x - self.oldrectx) ** 2 + (self.rect.y - self.oldrecty) ** 2) > self.radius * 2 or \
                     self.velocity[0] == 0 and self.velocity[1] == 0:
                 self.kill()
-        elif self.types == 'fall':
+        elif self.types == 'fall' or self.types == 'up':
             self.rect.y += self.gravity
-            if sqrt((self.rect.x - self.oldrectx) ** 2 + (self.rect.y - self.oldrecty) ** 2) > self.radius // 1.5 or \
+            if sqrt((self.rect.x - self.oldrectx) ** 2 + (self.rect.y - self.oldrecty) ** 2) > self.radius // 1.75 or \
                     self.velocity[0] == 0 and self.velocity[1] == 0:
                 self.kill()
         else:
