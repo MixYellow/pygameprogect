@@ -2,15 +2,16 @@ import pygame
 
 
 class Button:
-    def __init__(self, coord, cell_size, status=None, col=(0, 0, 0)):
+    def __init__(self, coord, cell_size, status=None, dobavka=0, col=(0, 0, 0)):
         self.coords = coord
         self.cell_size = cell_size
         self.color = col
         self.status = status
         self.font = pygame.font.SysFont('Algerian', cell_size * 2)
+        self.dobavka = dobavka
 
     def params(self):
-        return (self.coords[0], self.coords[1], self.cell_size * 7,
+        return (self.coords[0], self.coords[1], self.cell_size * 7 + self.dobavka,
                 self.cell_size * 4)
 
     def inButton(self, pos):
@@ -42,6 +43,9 @@ class Button:
             elif self.status == 'Medium':
                 menu.switch_choice('Medium')
                 menu.set_status('off')
+            elif self.status == 'Menu':
+                menu.switch_choice('on')
+                menu.set_status('on')
             else:
                 print(self.status)
 
