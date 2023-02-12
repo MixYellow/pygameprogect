@@ -35,7 +35,9 @@ class Menu:
         self.buttons = []
         self.choice = choice
         self.score = score
+        self.game_over = Button((weight // 15, height // 12 + self.cell_size * 5), self.cell_size * 2, 'Game_over', self.cell_size * 11)
         self.dopbuttons = [self.backMenu, self.save, self.miniload, self.end_game]
+        self.gameoverbutton = [self.game_over]
 
     def get_buttons(self):
         self.buttons = []
@@ -63,6 +65,9 @@ class Menu:
     def change_score(self, pribavka):
         self.score += pribavka
 
+    def set_score(self, new_input):
+        self.score = new_input
+
     def set_sound_status(self, status):
         self.sound = status
 
@@ -77,6 +82,12 @@ class Menu:
 
     def ret_dop_buttons(self):
         return self.dopbuttons
+
+    def ret_game_over_buttons(self):
+        return self.gameoverbutton
+
+    def set_dop_menu_buttons(self, new):
+        self.dop_menu = new
 
     def switch_choice(self, mode):
         self.choice = mode
@@ -97,10 +108,22 @@ class Menu:
                 screen.blit(self.font.render('mode:', True, (255, 0, 0)),
                            (self.weight // 2 - self.cell_size * 2.75, self.height // 3))
 
-    def show_buttons_in_game(self, screen, dopbuttons):
-        score = str(self.ret_score())
-        screen.blit(self.font.render('Score:', True, (255, 0, 0)), (self.weight // 1.38, 0))
-        screen.blit(self.font.render('0' * (5 - len(score)) + score, True, (255, 0, 0)), (self.weight // 1.38, self.height // 8))
-        pygame.draw.line(screen, (255, 255, 255), (self.weight // 1.5, 0), (self.weight // 1.5, self.height), self.cell_size // 10)
+    def show_buttons_in_game(self, screen, dopbuttons, menu=None, game_over='no', k=1, status='lose'):
+        if game_over == 'no':
+            score = str(self.ret_score())
+            screen.blit(self.font.render('Score:', True, (255, 0, 0)), (self.weight // 1.38, 0))
+            screen.blit(self.font.render('0' * (5 - len(score)) + score, True, (255, 0, 0)),
+                        (self.weight // 1.38, self.height // 8))
+            pygame.draw.line(screen, (255, 255, 255), (self.weight // 1.5, 0), (self.weight // 1.5, self.height),
+                             self.cell_size // 10)
+        else:
+            screen.blit(self.font.render('Score: {}'.format(self.ret_score()), True, (255, 0, 0)),
+                        (self.weight // 3.5, self.height // 7))
+            if status == 'lose':
+                screen.blit(self.font.render('You lose'.format(self.ret_score()), True, (255, 0, 0)),
+                            (self.weight // 2.8, self.height // 2 + self.cell_size * 6))
+            else:
+                screen.blit(self.font.render('You win!!'.format(self.ret_score()), True, (255, 0, 0)),
+                            (self.weight // 2.8, self.height // 2 + self.cell_size * 6))
         for button in dopbuttons:
-            button.draw(screen, self.cell_size)
+            button.draw(screen, self.cell_size * k)

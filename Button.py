@@ -1,3 +1,5 @@
+import pickle
+
 import pygame
 
 
@@ -25,7 +27,7 @@ class Button:
     def highlighted(self, button):
         self.color = (255, 255, 255)
 
-    def triggered(self, pos, menu):
+    def triggered(self, pos, menu, board=None, cell_size=None, main_hero=None, score=None):
         if self.inButton(pos) is True:
             if self.status == 'Play':
                 menu.play_menu_change_status('on')
@@ -47,6 +49,17 @@ class Button:
                 menu.switch_choice('Hard')
                 menu.set_status('off')
             elif self.status == 'Menu':
+                menu.switch_choice('on')
+                menu.set_status('on')
+            elif self.status == 'Save':
+                data = [board, cell_size, main_hero, score, menu.ret_score(), menu.get_choice()]
+                with open('save.txt', 'wb') as f:
+                    pickle.dump(data, f)
+            elif self.status == 'Load':
+                with open('save.txt', 'rb') as f:
+                    data = pickle.load(f)
+                return data
+            elif self.status == 'Game_over':
                 menu.switch_choice('on')
                 menu.set_status('on')
             else:
