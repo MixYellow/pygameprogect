@@ -3,7 +3,7 @@ import os
 import sys
 from random import choice, randint
 from math import sqrt
-from consts import EXPLORELST, FLYLST, GRAVITY, DROPLST, ONETIMELST, FALLINGLST, JUMPINGLST, ATTACKLST
+from consts import EXPLORELST, FLYLST, GRAVITY, DROPLST, ONETIMELST, FALLINGLST, JUMPINGLST, ATTACKLST, H, W
 
 pygame.init()
 all_sprites = pygame.sprite.Group()
@@ -133,6 +133,14 @@ class Particle(pygame.sprite.Sprite):
             self.gravity = -1
 
     def update(self):
+        if self.rect.y >= H:
+            self.kill()
+        elif self.rect.y <= 0:
+            self.kill()
+        elif self.rect.x <= 0:
+            self.kill()
+        elif self.rect.x >= W:
+            self.kill()
         if self.types == 'drop':
             if (sqrt((self.rect.x - self.oldrectx) ** 2 + (self.rect.y - self.oldrecty) ** 2) > self.radius * 1.25
             or self.velocity[0] == 0 and self.velocity[1] == 0) or self.flagdrop is True:

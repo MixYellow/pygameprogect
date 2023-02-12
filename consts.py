@@ -38,3 +38,5 @@ ATTACKLST = ['beet.png', 'angry.png']
 GRAVITY = 0.2
 
 cell_size = H // 20
+
+DOBAVKA = -10

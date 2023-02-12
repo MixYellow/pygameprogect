@@ -57,7 +57,7 @@ class MainHero:
                 except Exception as error:
                     pass
 
-    def go_to(self, board_y, board_x, main_hero, board, score, last_coords_nat=[-1]):
+    def go_to(self, board_y, board_x, main_hero, board, score, cell_size, menu, last_coords_nat=[-1]):
         lst_neighborsEVEN = [(self.board_y - 1, self.board_x - 1), (self.board_y - 2, self.board_x),
                              (self.board_y - 1, self.board_x), (self.board_y + 1, self.board_x),
                              (self.board_y + 2, self.board_x), (self.board_y + 1, self.board_x - 1)]
@@ -77,7 +77,7 @@ class MainHero:
                     last_coords = [last_coords_nat[0], last_coords_nat[1]]
                 self.board_y = board_y
                 self.board_x = board_x
-                self.check_position_status(board_y, board_x, board, last_coords, main_hero, score)
+                self.check_position_status(board_y, board_x, board, last_coords, main_hero, score, cell_size, menu)
                 if str(score) in self.volcanoses:
                     self.eruption(self.volcanoses[str(score)], board)
                 if self.status_bar_health == [] and self.status_bar_speed == []:
@@ -99,7 +99,7 @@ class MainHero:
                     last_coords = [last_coords_nat[0], last_coords_nat[1]]
                 self.board_y = board_y
                 self.board_x = board_x
-                self.check_position_status(board_y, board_x, board, last_coords, main_hero, score)
+                self.check_position_status(board_y, board_x, board, last_coords, main_hero, score, cell_size, menu)
                 if str(score) in self.volcanoses:
                     self.eruption(self.volcanoses[str(score)], board)
                 if self.status_bar_health == [] and self.status_bar_speed == []:
@@ -121,8 +121,20 @@ class MainHero:
         pygame.draw.circle(screen, pygame.Color('Black'), pos, cell_size / 1.5, 3)
         pygame.draw.circle(screen, statuses_of_heroes[self.status_of_hero], pos, cell_size / 2)
 
-    def check_position_status(self, board_y, board_x, board, last_coords, main_hero, score):
+    def check_position_status(self, board_y, board_x, board, last_coords, main_hero, score, cell_size, menu):
         status = board.get_board()[board_y][board_x].get_territory_status()[0]
+        choice = menu.get_choice()
+
+        if choice == 'Easy':
+            ratio = 10
+        elif choice == 'Medium':
+            ratio = 2
+        elif choice == 'Hard':
+            ratio = 1
+
+        menu.change_score(DOBAVKA * ratio)
+
+        positive_ratio = -10 // ratio
 
         library_of_gives = {'lavender': 'lavender flowers', 'field': 'meat', 'desert': 'sand'}
 
@@ -136,6 +148,7 @@ class MainHero:
             drop = library_of_gives[status]
             count_in_inventory = self.inventory.count(drop)
             if count_in_inventory != 3:
+                menu.change_score(DOBAVKA * positive_ratio)
                 if status == 'desert':
                     create_particles(board.get_board()[board_y][board_x].__int__(), 'sand.png', cell_size * 2)
                 elif status == 'field':
@@ -145,6 +158,7 @@ class MainHero:
             self.inventory += [drop, drop, drop][0:(3 - count_in_inventory)]
         elif status == 'trap':
             if 'lavender flowers' in self.inventory:
+                menu.change_score(DOBAVKA * positive_ratio)
                 create_particles(board.get_board()[board_y][board_x].__int__(), 'boom.png', cell_size)
                 pygame.time.wait(10)
                 create_particles(board.get_board()[board_y][board_x].__int__(), 'health.png', cell_size)
@@ -160,6 +174,7 @@ class MainHero:
             board.get_board()[board_y][board_x].set_territory_status(['emptiness'])
         elif status == 'natives':
             if 'lavender flowers' in self.inventory or 'meat' in self.inventory:
+                menu.change_score(DOBAVKA * positive_ratio)
                 create_particles(board.get_board()[board_y][board_x].__int__(), 'world.png', cell_size * 2)
                 board.get_board()[board_y][board_x].set_territory_status(['good_natives'])
                 if 'meat' in self.inventory:
@@ -173,11 +188,12 @@ class MainHero:
                 else:
                     create_particles(board.get_board()[board_y][board_x].__int__(), 'angry.png', cell_size * 2)
                     self.status_bar_health += DEATHLST
-                    self.go_to(last_coords[0], last_coords[1], main_hero, board, score - 1,
+                    self.go_to(last_coords[0], last_coords[1], main_hero, board, score - 1, cell_size, menu,
                                [last_coords[0], last_coords[1]])
                     self.status_bar_speed = SPEEDDEATHLST
         elif status == 'swamp':
             if 'sand' in self.inventory:
+                menu.change_score(DOBAVKA * positive_ratio)
                 create_particles(board.get_board()[board_y][board_x].__int__(), 'steam.png', cell_size * 2)
                 self.inventory.remove('sand')
                 board.get_board()[board_y][board_x].set_territory_status(['emptiness'])
@@ -186,6 +202,7 @@ class MainHero:
                 self.status_bar_speed = SPEEDDOWNLST
         elif status == 'animals':
             if 'meat' in self.inventory:
+                menu.change_score(DOBAVKA * positive_ratio)
                 create_particles(board.get_board()[board_y][board_x].__int__(), 'heart.png', cell_size)
                 self.status_bar_speed = LSTSPEEDUP
                 self.inventory.remove('meat')
@@ -200,13 +217,13 @@ class MainHero:
                     elif self.status_bar_health == []:
                         create_particles(board.get_board()[board_y][board_x].__int__(), 'beet.png', cell_size * 2)
                         self.status_bar_health += DEATHLST
-                        self.go_to(last_coords[0], last_coords[1], main_hero, board, score - 1,
+                        self.go_to(last_coords[0], last_coords[1], main_hero, board, score - 1, cell_size, menu,
                                    [last_coords[0], last_coords[1]])
                         self.status_bar_speed = SPEEDDEATHLST
                     else:
                         self.status_of_hero = 'death'
                         self.status_bar_health = ['death']
         elif status == 'volcano':
-            chance = randint(0, 1000)
+            chance = randint(0, 750)
             self.volcanoses[str(chance)] = [board_y, board_x]
 

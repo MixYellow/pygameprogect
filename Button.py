@@ -43,6 +43,9 @@ class Button:
             elif self.status == 'Medium':
                 menu.switch_choice('Medium')
                 menu.set_status('off')
+            elif self.status == 'Hard':
+                menu.switch_choice('Hard')
+                menu.set_status('off')
             elif self.status == 'Menu':
                 menu.switch_choice('on')
                 menu.set_status('on')

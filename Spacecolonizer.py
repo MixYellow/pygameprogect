@@ -32,15 +32,19 @@ if __name__ == '__main__':
             pygame.display.flip()
             clock.tick(50)
 
-        board = Board(5, 17, cell_size)
+        # board = Board(5, 17, cell_size)
 
         choice = menu.get_choice()
         if choice == 'Easy':
             cell_size = H // 20
             board = Board(5, 17, cell_size)
-        if choice == 'Medium':
+        elif choice == 'Medium':
             cell_size = H // 40
-            board = Board(10, 35, cell_size)
+            board = Board(11, 36, cell_size)
+        elif choice == 'Hard':
+            cell_size = H // 50
+            board = Board(14, 47, cell_size)
+
         dopcoords = board.prerender()
         score = 0
         main_hero = MainHero(dopcoords[0], dopcoords[1])
@@ -58,7 +62,7 @@ if __name__ == '__main__':
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     what = board.on_click(event.pos, board)
                     if what is not False:
-                        score = main_hero.go_to(what[0], what[1], main_hero, board, score)
+                        score = main_hero.go_to(what[0], what[1], main_hero, board, score, cell_size, menu)
                     for button in buttons:
                         button.triggered(event.pos, menu)
 
