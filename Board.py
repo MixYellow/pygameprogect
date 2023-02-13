@@ -73,16 +73,27 @@ class Board:
                     return self.coords_in_lst
         return False
 
-    def check_win(self):
-        flagopen = True
-        flagbed = True
-        for yy in range(len(self.board)):
-            for xx in range(len(self.board[yy])):
-                if self.board[yy][xx].get_status() == 'close':
-                    flagopen = False
-                if self.board[yy][xx].get_territory_status()[0] in lst_of_types_of_hex[1]:
-                    flagbed = False
-        if flagbed is True and flagopen is True:
-            return True
-        return False
+    def check_win(self, status='ok'):
+        if status != 'gg':
+            flagopen = True
+            flagbed = True
+            for yy in range(len(self.board)):
+                for xx in range(len(self.board[yy])):
+                    if self.board[yy][xx].get_status() == 'close':
+                        flagopen = False
+                    if self.board[yy][xx].get_territory_status()[0] in lst_of_types_of_hex[1]:
+                        flagbed = False
+            if flagbed is True and flagopen is True:
+                return True
+            return False
+        else:
+            n = 0
+            r = 0
+            for yy in range(len(self.board)):
+                for xx in range(len(self.board[yy])):
+                    if self.board[yy][xx].get_status() == 'close':
+                        n += 1
+                    if self.board[yy][xx].get_status() in lst_of_types_of_hex[1]:
+                        r += 1
+            return n, r
 

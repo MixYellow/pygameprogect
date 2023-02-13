@@ -36,7 +36,7 @@ class Button:
             elif self.status == 'sound-on':
                 menu.set_sound_status('off')
             elif self.status == 'Quit':
-                pygame.quit()
+                return 'endgame'
             elif self.status == 'Back':
                 menu.play_menu_change_status('off')
             elif self.status == 'Easy':
@@ -52,16 +52,24 @@ class Button:
                 menu.switch_choice('on')
                 menu.set_status('on')
             elif self.status == 'Save':
-                data = [board, cell_size, main_hero, score, menu.ret_score(), menu.get_choice()]
-                with open('save.txt', 'wb') as f:
-                    pickle.dump(data, f)
+                try:
+                    data = [board, cell_size, main_hero, score, menu.ret_score(), menu.get_choice()]
+                    with open('save.txt', 'wb') as f:
+                        pickle.dump(data, f)
+                except Exception as error:
+                    pass
             elif self.status == 'Load':
-                with open('save.txt', 'rb') as f:
-                    data = pickle.load(f)
-                return data
+                try:
+                    with open('save.txt', 'rb') as f:
+                        data = pickle.load(f)
+                    return data
+                except Exception as error:
+                    pass
             elif self.status == 'Game_over':
                 menu.switch_choice('on')
                 menu.set_status('on')
+            elif self.status == 'End':
+                return 'gg'
             else:
                 print(self.status)
 

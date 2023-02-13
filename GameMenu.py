@@ -4,11 +4,12 @@ from Effects import load_image
 
 
 class Menu:
-    def __init__(self, weight, height, cell_size, start_menu='on', sound='on', play_menu='off', choice='on', dop_menu='off', score=10000):  # добавить draw позиции для отрисовки логотипа, кнопок
+    def __init__(self, weight, height, cell_size, sound, record, start_menu='on', play_menu='off', choice='on', dop_menu='off', score=10000):  # добавить draw позиции для отрисовки логотипа, кнопок
         self.cell_size = cell_size
         self.start_menu = start_menu
         self.play_menu = play_menu
         self.sound = sound
+        self.record = record
         self.dop_menu = dop_menu
         self.quiter = Button((weight // 15, height // 9 + 10 * self.cell_size), self.cell_size, 'Quit')
         self.save = Button((weight // 15, height // 9 + 5 * self.cell_size), self.cell_size, 'Save')
@@ -32,6 +33,7 @@ class Menu:
         self.weight = weight
         self.height = height
         self.font = pygame.font.SysFont('Algerian', cell_size * 2)
+        self.font2 = pygame.font.SysFont('Algerian', cell_size)
         self.buttons = []
         self.choice = choice
         self.score = score
@@ -58,6 +60,9 @@ class Menu:
 
     def play_menu_change_status(self, change):
         self.play_menu = change
+
+    def get_musik_status(self):
+        return self.sound
 
     def ret_score(self):
         return self.score
@@ -114,6 +119,8 @@ class Menu:
             screen.blit(self.font.render('Score:', True, (255, 0, 0)), (self.weight // 1.38, 0))
             screen.blit(self.font.render('0' * (5 - len(score)) + score, True, (255, 0, 0)),
                         (self.weight // 1.38, self.height // 8))
+            screen.blit(self.font2.render('Record: {}'.format(self.record), True, (255, 0, 0)),
+                        (self.weight // 1.41, self.height // 3.75))
             pygame.draw.line(screen, (255, 255, 255), (self.weight // 1.5, 0), (self.weight // 1.5, self.height),
                              self.cell_size // 10)
         else:
