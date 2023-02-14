@@ -1,6 +1,5 @@
 import pygame
 from Board import *
-from Hex import *
 from Effects import *
 from consts import *
 from GameMenu import *
@@ -16,20 +15,20 @@ if __name__ == '__main__':
     try:
         with open('cfg.txt', 'rb') as f:
             data = pickle.load(f)
+            musik_flag = data[2]
+            vol = data[0]
+            ingamevol = data[1]
+            record = data[3]
     except Exception as error:
         with open('cfg.txt', 'wb') as f:
             pickle.dump([1.0, 1.0, 'on'], f)
             data = [1.0, 1.0, 'on', 0]
-    if len(data) != 4:
-        with open('cfg.txt', 'wb') as f:
-            pickle.dump([1.0, 1.0, 'on', 0], f)
-            data = [1.0, 1.0, 'on', 0]
+            musik_flag = data[2]
+            vol = data[0]
+            ingamevol = data[1]
+            record = data[3]
     running = True
     menu_open = 'on'
-    musik_flag = data[2]
-    vol = data[0]
-    ingamevol = data[1]
-    record = data[3]
     while running is True:
         menu = Menu(W, H, H // 20, musik_flag, record)
         game_status = 'lose'
