@@ -11,6 +11,7 @@ import pickle
 if __name__ == '__main__':
     pygame.display.set_mode((W, H))
     pygame.init()
+    pygame.display.set_icon(load_image('planet.png'))
     pygame.display.set_caption('SpaceColonizer')
     screen = pygame.display.set_mode((W, H))
     clock = pygame.time.Clock()
