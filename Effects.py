@@ -7,6 +7,7 @@ from consts import EXPLORELST, FLYLST, GRAVITY, DROPLST, ONETIMELST, FALLINGLST,
 
 pygame.init()
 all_sprites = pygame.sprite.Group()
+# реализация эффектов внутри игры
 
 
 def load_image(name, size=(10, 10), colorkey=None):

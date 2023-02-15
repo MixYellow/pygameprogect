@@ -7,6 +7,7 @@ import sys
 
 
 class MainHero:
+    # класс персонажа
     def __init__(self, board_y, board_x, status_of_hero='allright'):
         self.inventory = []
         self.effects = []

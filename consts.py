@@ -1,4 +1,5 @@
 import pygame
+# список константных значений
 
 lst_of_types_of_hex = [['lavender', 'field', 'desert'],  # good
                        ['trap', 'natives', 'swamp'],  # bad

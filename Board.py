@@ -5,7 +5,7 @@ from random import randint, choices
 
 
 class Board:
-    # создание поля
+    # создание игрового поля
     def __init__(self, width, height, cell_size):
         self.width = width
         self.height = height

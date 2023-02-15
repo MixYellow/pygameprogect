@@ -3,6 +3,7 @@ from math import sqrt
 
 
 class Hex:
+    # реализация класса игровой клетки
     def __init__(self, position_x, position_y, territory_status, status='close'):
         self.territory_status = territory_status
         self.status = status

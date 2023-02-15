@@ -6,6 +6,8 @@ from GameMenu import *
 from Button import *
 import pickle
 
+# Основной игровой цикл
+
 if __name__ == '__main__':
     pygame.display.set_mode((W, H))
     pygame.init()
@@ -182,7 +184,6 @@ if __name__ == '__main__':
 
             pygame.display.flip()
             clock.tick(50)
-
 
     with open('cfg.txt', 'wb') as f:
         data = [vol, ingamevol, musik_flag, record]

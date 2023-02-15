@@ -4,6 +4,7 @@ import pygame
 
 
 class Button:
+    # реализация класса кнопки
     def __init__(self, coord, cell_size, status=None, dobavka=0, col=(0, 0, 0)):
         self.coords = coord
         self.cell_size = cell_size

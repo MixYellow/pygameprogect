@@ -5,6 +5,7 @@ import os
 
 
 class Menu:
+    # класс игрового меню
     def __init__(self, weight, height, cell_size, sound, record, start_menu='on', play_menu='off', choice='on', dop_menu='off', score=10000):  # добавить draw позиции для отрисовки логотипа, кнопок
         self.cell_size = cell_size
         self.start_menu = start_menu
