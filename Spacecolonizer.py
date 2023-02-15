@@ -38,7 +38,7 @@ if __name__ == '__main__':
         except Exception as err:
             pass
         while menu_open == 'on' and running is True:
-            musik_flag = menu.get_musik_status()
+            musik_flag = menu.get_music_status()
             try:
                 pygame.mixer.music.set_volume(vol)
                 if musik_flag == 'on':
@@ -66,8 +66,12 @@ if __name__ == '__main__':
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_DOWN:
                         vol -= 0.1
+                        if vol < 0.0:
+                            vol = 0.0
                     elif event.key == pygame.K_UP:
                         vol += 0.1
+                        if vol > 1.0:
+                            vol = 1.0
             screen.fill((0, 0, 0))
             menu.show_menu(screen, menu.get_buttons())
             all_sprites.update()
@@ -127,12 +131,16 @@ if __name__ == '__main__':
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_DOWN:
                         ingamevol -= 0.1
+                        if ingamevol < 0.0:
+                            ingamevol = 0.0
                     elif event.key == pygame.K_UP:
                         ingamevol += 0.1
+                        if ingamevol > 1.0:
+                            ingamevol = 1.0
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     what = board.on_click(event.pos, board)
                     if what is not False:
-                        score = main_hero.go_to(what[0], what[1], main_hero, board, score, cell_size, menu)
+                        score = main_hero.go_to(what[0], what[1], main_hero, board, score, cell_size, menu, ingamevol)
                     for button in buttons:
                         loadorno = button.triggered(event.pos, menu, board, cell_size, main_hero, score)
                         if loadorno == 'gg':
@@ -170,7 +178,7 @@ if __name__ == '__main__':
                 all_sprites.update()
                 menu.show_buttons_in_game(screen, menu.ret_dop_buttons())
             else:
-                menu.show_buttons_in_game(screen, menu.ret_game_over_buttons(), menu, 'yes', 3, game_status)
+                menu.show_buttons_in_game(screen, menu.ret_game_over_buttons(), ingamevol, 'yes', 3, game_status)
 
             pygame.display.flip()
             clock.tick(50)

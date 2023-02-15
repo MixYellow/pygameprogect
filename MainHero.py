@@ -2,6 +2,8 @@ import pygame
 from random import choices, randint
 from Effects import *
 from consts import *
+import os
+import sys
 
 
 class MainHero:
@@ -35,12 +37,18 @@ class MainHero:
         else:
             return False
 
-    def eruption(self, coords, board):
+    def eruption(self, coords, board, sound, ingamevol):
         coord_y, coord_x = coords
         lst_neighborsEVEN = [[-1, -1], [-2, 0], [-1, 0], [1, 0], [2, 0], [1, -1]]
         lst_neighborsODD = [[-1, 0], [-2, 0], [-1, 1], [1, 1], [2, 0], [1, 0]]
 
         board.get_board()[coord_y][coord_x].set_territory_status(['magma'])
+
+        if os.path.isfile('sounds\eruption.wav') and sound == 'on':
+            file = pygame.mixer.Sound('sounds\eruption.wav')
+            file.set_volume(ingamevol)
+            file.play()
+
 
         if coord_y % 2 == 0:
             for i in range(len(lst_neighborsEVEN)):
@@ -57,7 +65,7 @@ class MainHero:
                 except Exception as error:
                     pass
 
-    def go_to(self, board_y, board_x, main_hero, board, score, cell_size, menu, last_coords_nat=[-1]):
+    def go_to(self, board_y, board_x, main_hero, board, score, cell_size, menu, ingamevol, last_coords_nat=[-1]):
         lst_neighborsEVEN = [(self.board_y - 1, self.board_x - 1), (self.board_y - 2, self.board_x),
                              (self.board_y - 1, self.board_x), (self.board_y + 1, self.board_x),
                              (self.board_y + 2, self.board_x), (self.board_y + 1, self.board_x - 1)]
@@ -65,6 +73,8 @@ class MainHero:
         lst_neighborsODD = [(self.board_y - 1, self.board_x), (self.board_y - 2, self.board_x),
                             (self.board_y - 1, self.board_x + 1), (self.board_y + 1, self.board_x + 1),
                             (self.board_y + 2, self.board_x), (self.board_y + 1, self.board_x)]
+
+        sound = menu.get_music_status()
 
         if self.board_y % 2 == 0:
             if (board_y, board_x) in lst_neighborsEVEN:
@@ -77,9 +87,10 @@ class MainHero:
                     last_coords = [last_coords_nat[0], last_coords_nat[1]]
                 self.board_y = board_y
                 self.board_x = board_x
-                self.check_position_status(board_y, board_x, board, last_coords, main_hero, score, cell_size, menu)
+                self.check_position_status(board_y, board_x, board, last_coords, main_hero, score,
+                                           cell_size, menu, ingamevol)
                 if str(score) in self.volcanoses:
-                    self.eruption(self.volcanoses[str(score)], board)
+                    self.eruption(self.volcanoses[str(score)], board, sound, ingamevol)
                 if self.status_bar_health == [] and self.status_bar_speed == []:
                     self.status_of_hero = 'allright'
                 elif self.status_bar_health != []:
@@ -99,9 +110,10 @@ class MainHero:
                     last_coords = [last_coords_nat[0], last_coords_nat[1]]
                 self.board_y = board_y
                 self.board_x = board_x
-                self.check_position_status(board_y, board_x, board, last_coords, main_hero, score, cell_size, menu)
+                self.check_position_status(board_y, board_x, board, last_coords, main_hero, score,
+                                           cell_size, menu, ingamevol)
                 if str(score) in self.volcanoses:
-                    self.eruption(self.volcanoses[str(score)], board)
+                    self.eruption(self.volcanoses[str(score)], board, sound, ingamevol)
                 if self.status_bar_health == [] and self.status_bar_speed == []:
                     self.status_of_hero = 'allright'
                 elif self.status_bar_health != []:
@@ -121,16 +133,28 @@ class MainHero:
         pygame.draw.circle(screen, pygame.Color('Black'), pos, cell_size / 1.5, 3)
         pygame.draw.circle(screen, statuses_of_heroes[self.status_of_hero], pos, cell_size / 2)
 
-    def check_position_status(self, board_y, board_x, board, last_coords, main_hero, score, cell_size, menu):
+    def check_position_status(self, board_y, board_x, board, last_coords, main_hero, score, cell_size, menu, ingamevol):
         status = board.get_board()[board_y][board_x].get_territory_status()[0]
         choice = menu.get_choice()
+        sound = menu.get_music_status()
 
         if choice == 'Easy':
             ratio = 10
         elif choice == 'Medium':
-            ratio = 2
+            if self.status_of_hero == 'speddown':
+                ratio = 5
+            elif self.status_of_hero == 'speedup':
+                ratio = 1
+            else:
+                ratio = 2
         elif choice == 'Hard':
-            ratio = 1
+            if self.status_of_hero == 'speddown':
+                ratio = 2
+            elif self.status_of_hero == 'speedup':
+                ratio = 0.5
+            else:
+                ratio = 1
+
 
         menu.change_score(DOBAVKA * ratio)
 
@@ -140,6 +164,10 @@ class MainHero:
 
         if status == 'lavender':
             if self.status_bar_health != []:
+                if os.path.isfile('sounds\healing.wav') and sound == 'on':
+                    file = pygame.mixer.Sound('sounds\healing.wav')
+                    file.set_volume(ingamevol)
+                    file.play()
                 self.status_bar_health = []
                 create_particles(board.get_board()[board_y][board_x].__int__(), 'health.png', cell_size)
                 self.status_of_hero = 'allright'
@@ -148,6 +176,10 @@ class MainHero:
             drop = library_of_gives[status]
             count_in_inventory = self.inventory.count(drop)
             if count_in_inventory != 3:
+                if os.path.isfile('sounds\getting.wav') and sound == 'on':
+                    file = pygame.mixer.Sound('sounds\getting.wav')
+                    file.set_volume(ingamevol)
+                    file.play()
                 menu.change_score(DOBAVKA * positive_ratio)
                 if status == 'desert':
                     create_particles(board.get_board()[board_y][board_x].__int__(), 'sand.png', cell_size * 2)
@@ -158,6 +190,10 @@ class MainHero:
             self.inventory += [drop, drop, drop][0:(3 - count_in_inventory)]
         elif status == 'trap':
             if 'lavender flowers' in self.inventory:
+                if os.path.isfile('sounds\healing.wav') and sound == 'on':
+                    file = pygame.mixer.Sound('sounds\healing.wav')
+                    file.set_volume(ingamevol)
+                    file.play()
                 menu.change_score(DOBAVKA * positive_ratio)
                 create_particles(board.get_board()[board_y][board_x].__int__(), 'boom.png', cell_size)
                 pygame.time.wait(10)
@@ -169,11 +205,19 @@ class MainHero:
                     self.status_bar_health = ['death']
                     self.status_of_hero = 'death'
                 else:
+                    if os.path.isfile('sounds\hraping.wav') and sound == 'on':
+                        file = pygame.mixer.Sound('sounds\hraping.wav')
+                        file.set_volume(ingamevol)
+                        file.play()
                     self.status_bar_health += DEATHLST
                     self.status_bar_speed = SPEEDDEATHLST
             board.get_board()[board_y][board_x].set_territory_status(['emptiness'])
         elif status == 'natives':
             if 'lavender flowers' in self.inventory or 'meat' in self.inventory:
+                if os.path.isfile('sounds\world.wav') and sound == 'on':
+                    file = pygame.mixer.Sound('sounds\world.wav')
+                    file.set_volume(ingamevol)
+                    file.play()
                 menu.change_score(DOBAVKA * positive_ratio)
                 create_particles(board.get_board()[board_y][board_x].__int__(), 'world.png', cell_size * 2)
                 board.get_board()[board_y][board_x].set_territory_status(['good_natives'])
@@ -186,6 +230,10 @@ class MainHero:
                     self.status_of_hero = 'death'
                     self.status_bar_health = ['death']
                 else:
+                    if os.path.isfile('sounds\Attack.wav') and sound == 'on':
+                        file = pygame.mixer.Sound('sounds\Attack.wav')
+                        file.set_volume(ingamevol)
+                        file.play()
                     create_particles(board.get_board()[board_y][board_x].__int__(), 'angry.png', cell_size * 2)
                     self.status_bar_health += DEATHLST
                     self.go_to(last_coords[0], last_coords[1], main_hero, board, score - 1, cell_size, menu,
@@ -193,15 +241,27 @@ class MainHero:
                     self.status_bar_speed = SPEEDDEATHLST
         elif status == 'swamp':
             if 'sand' in self.inventory:
+                if os.path.isfile('sounds\sand.wav') and sound == 'on':
+                    file = pygame.mixer.Sound('sounds\sand.wav')
+                    file.set_volume(ingamevol)
+                    file.play()
                 menu.change_score(DOBAVKA * positive_ratio)
                 create_particles(board.get_board()[board_y][board_x].__int__(), 'steam.png', cell_size * 2)
                 self.inventory.remove('sand')
                 board.get_board()[board_y][board_x].set_territory_status(['emptiness'])
             elif self.status_bar_speed == [] or 'death' not in self.status_bar_health:
+                if os.path.isfile('sounds\swamp.wav') and sound == 'on':
+                    file = pygame.mixer.Sound('sounds\swamp.wav')
+                    file.set_volume(ingamevol)
+                    file.play()
                 create_particles(board.get_board()[board_y][board_x].__int__(), 'speeddown.png', cell_size * 2)
                 self.status_bar_speed = SPEEDDOWNLST
         elif status == 'animals':
             if 'meat' in self.inventory:
+                if os.path.isfile('sounds\horse.wav') and sound == 'on':
+                    file = pygame.mixer.Sound('sounds\horse.wav')
+                    file.set_volume(ingamevol)
+                    file.play()
                 menu.change_score(DOBAVKA * positive_ratio)
                 create_particles(board.get_board()[board_y][board_x].__int__(), 'heart.png', cell_size)
                 self.status_bar_speed = LSTSPEEDUP
@@ -212,9 +272,17 @@ class MainHero:
                 lucky = choices(['lucky', 'notlucky'], [0.8, 0.2])
                 if lucky == 'notlucky':
                     if 'lavender flowers' in self.inventory:
+                        if os.path.isfile('sounds\healing.wav') and sound == 'on':
+                            file = pygame.mixer.Sound('sounds\healing.wav')
+                            file.set_volume(ingamevol)
+                            file.play()
                         create_particles(board.get_board()[board_y][board_x].__int__(), 'health.png', cell_size)
                         self.inventory.remove('lavender flowers')
                     elif self.status_bar_health == []:
+                        if os.path.isfile('sounds\AngryAnimals.wav') and sound == 'on':
+                            file = pygame.mixer.Sound('sounds\AngryAnimals.wav')
+                            file.set_volume(ingamevol)
+                            file.play()
                         create_particles(board.get_board()[board_y][board_x].__int__(), 'beet.png', cell_size * 2)
                         self.status_bar_health += DEATHLST
                         self.go_to(last_coords[0], last_coords[1], main_hero, board, score - 1, cell_size, menu,
