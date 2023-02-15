@@ -115,7 +115,7 @@ class Menu:
                 screen.blit(self.font.render('mode:', True, (255, 0, 0)),
                            (self.weight // 2 - self.cell_size * 2.75, self.height // 3))
 
-    def show_buttons_in_game(self, screen, dopbuttons, ingamevol=None, game_over='no', k=1, status='lose'):
+    def show_buttons_in_game(self, screen, dopbuttons, ingamevol=None, game_over='no', k=1, status='lose', n=0):
         if game_over == 'no':
             score = str(self.ret_score())
             screen.blit(self.font.render('Score:', True, (255, 0, 0)), (self.weight // 1.38, 0))
@@ -129,14 +129,14 @@ class Menu:
             screen.blit(self.font.render('Score: {}'.format(self.ret_score()), True, (255, 0, 0)),
                         (self.weight // 3.5, self.height // 7))
             if status == 'lose':
-                if os.path.isfile('sounds\lose.wav') and self.sound == 'on':
+                if os.path.isfile('sounds\lose.wav') and self.sound == 'on' and n < 1:
                     file = pygame.mixer.Sound('sounds\lose.wav')
                     file.set_volume(ingamevol)
                     file.play()
                 screen.blit(self.font.render('You lose'.format(self.ret_score()), True, (255, 0, 0)),
                             (self.weight // 2.8, self.height // 2 + self.cell_size * 6))
             else:
-                if os.path.isfile('sounds\Win.wav') and self.sound == 'on':
+                if os.path.isfile('sounds\Win.wav') and self.sound == 'on' and n < 1:
                     file = pygame.mixer.Sound('sounds\Win.wav')
                     file.set_volume(ingamevol)
                     file.play()

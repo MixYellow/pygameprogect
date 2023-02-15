@@ -233,11 +233,11 @@ class MainHero:
                 else:
                     if os.path.isfile('sounds\Attack.wav') and sound == 'on':
                         file = pygame.mixer.Sound('sounds\Attack.wav')
-                        file.set_volume(ingamevol)
-                        file.play()
+                        file.set_volume(ingamevol // 2)
+                        file.play(loops=0, maxtime=1)
                     create_particles(board.get_board()[board_y][board_x].__int__(), 'angry.png', cell_size * 2)
                     self.status_bar_health += DEATHLST
-                    self.go_to(last_coords[0], last_coords[1], main_hero, board, score - 1, cell_size, menu,
+                    self.go_to(last_coords[0], last_coords[1], main_hero, board, score - 1, cell_size, menu, ingamevol,
                                [last_coords[0], last_coords[1]])
                     self.status_bar_speed = SPEEDDEATHLST
         elif status == 'swamp':
@@ -261,8 +261,8 @@ class MainHero:
             if 'meat' in self.inventory:
                 if os.path.isfile('sounds\horse.wav') and sound == 'on':
                     file = pygame.mixer.Sound('sounds\horse.wav')
-                    file.set_volume(ingamevol)
-                    file.play()
+                    file.set_volume(ingamevol // 2)
+                    file.play(loops=0, maxtime=1)
                 menu.change_score(DOBAVKA * positive_ratio)
                 create_particles(board.get_board()[board_y][board_x].__int__(), 'heart.png', cell_size)
                 self.status_bar_speed = LSTSPEEDUP
@@ -286,7 +286,7 @@ class MainHero:
                             file.play()
                         create_particles(board.get_board()[board_y][board_x].__int__(), 'beet.png', cell_size * 2)
                         self.status_bar_health += DEATHLST
-                        self.go_to(last_coords[0], last_coords[1], main_hero, board, score - 1, cell_size, menu,
+                        self.go_to(last_coords[0], last_coords[1], main_hero, board, score - 1, cell_size, menu, ingamevol,
                                    [last_coords[0], last_coords[1]])
                         self.status_bar_speed = SPEEDDEATHLST
                     else:

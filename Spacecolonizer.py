@@ -112,6 +112,8 @@ if __name__ == '__main__':
         except Exception as err:
             pass
 
+        flag = True
+
         while menu_open == 'off' and running is True:
             loadorno = None
             dop_menu = menu.get_dop_menu_status()
@@ -161,15 +163,21 @@ if __name__ == '__main__':
                 menu.set_dop_menu_buttons('on')
                 game_status = 'lose'
                 menu.change_score(n * -100 + r * -120)
+                n = 0
+                loadorno = None
                 if menu.ret_score() > record:
                     record = menu.ret_score()
             if main_hero.get_status_of_hero() == 'death':
                 menu.set_dop_menu_buttons('on')
                 game_status = 'lose'
                 menu.set_score(0)
-            if board.check_win() is True:
+                n = 0
+                main_hero.set_status_of_hero('allright')
+            if board.check_win() is True and flag is True:
                 menu.set_dop_menu_buttons('on')
                 game_status = 'win'
+                n = 0
+                flag = False
                 if menu.ret_score() > record:
                     record = menu.ret_score()
 
@@ -181,7 +189,7 @@ if __name__ == '__main__':
                 all_sprites.update()
                 menu.show_buttons_in_game(screen, menu.ret_dop_buttons())
             else:
-                menu.show_buttons_in_game(screen, menu.ret_game_over_buttons(), ingamevol, 'yes', 3, game_status)
+                menu.show_buttons_in_game(screen, menu.ret_game_over_buttons(), ingamevol, 'yes', 3, game_status, n)
 
             pygame.display.flip()
             clock.tick(50)
