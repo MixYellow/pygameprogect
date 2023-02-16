@@ -28,11 +28,11 @@ class Board:
         for _ in range(self.height):
             for __ in range(self.width):
                 who_it_is = [0, 1, 2]
-                who_it_is = choices(who_it_is, weights=[0.3, 0.2, 0.5])[0]
+                who_it_is = choices(who_it_is, weights=[0.28, 0.42, 0.3])[0]
                 if who_it_is == 0:
-                    who_it_is = choices(lst_of_types_of_hex[0], weights=[0.3, 0.3, 0.4])
+                    who_it_is = choices(lst_of_types_of_hex[0], weights=[0.21, 0.29, 0.5])
                 elif who_it_is == 1:
-                    who_it_is = choices(lst_of_types_of_hex[1], weights=[0.2, 0.4, 0.4])
+                    who_it_is = choices(lst_of_types_of_hex[1], weights=[0.2, 0.3, 0.5])
                 else:
                     who_it_is = choices(lst_of_types_of_hex[2], weights=[0.68, 0.0, 0.2, 0.1, 0.02])
 
